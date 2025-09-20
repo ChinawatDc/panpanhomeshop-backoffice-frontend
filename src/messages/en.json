@@ -1,0 +1,19 @@
+{
+    "Nav": {
+        "home": "Home",
+        "products": "Products",
+        "cart": "Cart",
+        "profile": "Profile",
+        "login": "Login",
+        "register": "Register"
+    },
+    "Home": {
+        "welcome": "Welcome to",
+        "subtitle": "Your trusted source for lifestyle and home products",
+        "shopNow": "🛒 Shop Now",
+        "featured": "Featured Products"
+    },
+    "Footer": {
+        "tagline": "Lifestyle & Home Goods"
+    }
+}
