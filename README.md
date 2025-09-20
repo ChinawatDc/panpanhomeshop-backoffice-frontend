@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏠 PanPan Home
 
-## Getting Started
+E-commerce Platform สำหรับขายสินค้า **Lifestyle / ของใช้ / ของแต่งบ้าน**  
+ประกอบด้วย 2 ส่วนหลักคือ
 
-First, run the development server:
+- **Frontend** → [Next.js 14](https://nextjs.org/) (App Router, Tailwind CSS)
+- **Backend** → [Golang](https://go.dev/) (REST API / gRPC + gRPC-Gateway)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🌐 Features
+
+### ลูกค้า (Public)
+
+- `/` → หน้าแรก (Landing / Home)
+- `/products` → แสดงสินค้าทั้งหมด
+- `/products/[id]` → รายละเอียดสินค้า
+- `/cart` → ตะกร้าสินค้า
+- `/checkout` → ชำระเงิน
+- `/profile` → โปรไฟล์ลูกค้า (สั่งซื้อ/ที่อยู่/เปลี่ยนรหัสผ่าน)
+- `/auth/login` → เข้าสู่ระบบ
+- `/auth/register` → สมัครสมาชิก
+
+### ผู้ดูแลระบบ (Admin Panel)
+
+- `/admin` → Dashboard
+- `/admin/products` → จัดการสินค้า
+- `/admin/products/create` → เพิ่มสินค้าใหม่
+- `/admin/products/[id]/edit` → แก้ไขสินค้า
+- `/admin/users` → จัดการผู้ใช้
+- `/admin/orders` → จัดการออเดอร์
+- `/admin/customers` → ข้อมูลลูกค้า
+
+---
+
+## 📂 Project Structure
+
+```plaintext
+panpan-home/
+├── frontend/               # Next.js 14 (App Router)
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── products/
+│   │   │   ├── page.tsx
+│   │   │   └── [id]/page.tsx
+│   │   ├── cart/page.tsx
+│   │   ├── checkout/page.tsx
+│   │   ├── profile/page.tsx
+│   │   ├── auth/
+│   │   │   ├── login/page.tsx
+│   │   │   └── register/page.tsx
+│   │   └── admin/
+│   │       ├── page.tsx
+│   │       ├── products/page.tsx
+│   │       ├── products/create/page.tsx
+│   │       ├── products/[id]/edit/page.tsx
+│   │       ├── users/page.tsx
+│   │       ├── orders/page.tsx
+│   │       └── customers/page.tsx
+│   │
+│   ├── components/         # UI components
+│   ├── lib/                # helper / api client
+│   ├── styles/             # global css / tailwind
+│   ├── hooks/              # react hooks
+│   ├── context/            # context provider
+│   └── types/              # type/interface (ts)
+│
+├── backend/                # Golang service
+│   ├── cmd/server/main.go  # entrypoint
+│   ├── internal/
+│   │   ├── api/            # handler, router
+│   │   ├── models/         # GORM models
+│   │   ├── repository/     # query DB
+│   │   ├── service/        # business logic
+│   │   └── config/         # env, database
+│   └── pkg/                # utils, middleware, auth
+│
+├── docker-compose.yml
+├── Makefile
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔗 API Endpoints (Backend)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```http
+/api/v1/auth/login
+/api/v1/auth/register
 
-## Learn More
+/api/v1/products        (GET, POST)
+/api/v1/products/:id    (GET, PUT, DELETE)
 
-To learn more about Next.js, take a look at the following resources:
+/api/v1/users           (GET, POST)
+/api/v1/users/:id       (GET, PUT, DELETE)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+/api/v1/orders          (GET, POST)
+/api/v1/orders/:id      (GET, PUT, DELETE)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+/api/v1/customers       (GET, POST)
+/api/v1/customers/:id   (GET, PUT, DELETE)
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. Clone Repo
+
+```bash
+git clone https://github.com/yourname/panpan-home.git
+cd panpan-home
+```
+
+### 2. Frontend (Next.js)
+
+```bash
+cd frontend
+npm install
+npm run dev
+# open http://localhost:3000
+```
+
+### 3. Backend (Go)
+
+```bash
+cd backend
+go mod tidy
+go run cmd/server/main.go
+# open http://localhost:8080/api/healthz
+```
+
+---
+
+## 🐳 Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+---
+
+## ✅ Summary
+
+- **Frontend** = Next.js → หน้าเว็บลูกค้า + Admin Panel
+- **Backend** = Golang → REST API / gRPC
+- **Domain** = `panpanhome.com`
+
+---
+
+👨‍💻 Developed for **PanPan Home** E-commerce Platform
+# panpanhomeshop-backoffice-frontend
