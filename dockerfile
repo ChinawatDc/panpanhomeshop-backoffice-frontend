@@ -1,5 +1,5 @@
 # Stage 1: Builder Stage (for building the app)
-FROM registry.cib.go.th/tcsd-scanin/node:22-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -18,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production Stage (for running the app)
-FROM registry.cib.go.th/tcsd-scanin/node:22-alpine AS production
+FROM node:22-alpine AS production
 
 # Set the working directory
 WORKDIR /usr/src/app
