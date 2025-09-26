@@ -1,14 +1,26 @@
 'use client';
 
-import { adminItems, authItems, menuItems } from '@/config/menuConfig';
+import {
+  adminItems,
+  authItems,
+  crmItems,
+  docItems,
+  financeItems,
+  hrItems,
+  lawItems,
+  portalItems,
+  securityItems,
+  shopItems, // ✅ import shopItems
+} from '@/config/menuConfig';
 import { getPublicIp } from '@/libs/getPublicIp';
 import { removePairTokens } from '@/libs/token';
 import { clearUser } from '@/redux/slices/authSlice';
 import { RootState } from '@/redux/store';
 import { logoutService } from '@/services/auth';
+import { MenuItem } from '@/types/auth';
 import { Avatar, Button, Dropdown, Layout, Menu, message, Space } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,13 +28,12 @@ const { Header: AntHeader } = Layout;
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => setIsMounted(true), []);
 
   const handleLogout = async () => {
     try {
@@ -39,22 +50,23 @@ export default function Header() {
     }
   };
 
-  // ✅ render menu หลัง mount เท่านั้น
-  let items = [{ key: 'home', label: <Link href='/'>หน้าแรก</Link> }];
-  if (isMounted && user) {
-    if (user.role_id === 1 || user.role_id === 3) {
-      items = adminItems.map((i) => ({
-        key: i.key,
-        label: <Link href={i.path}>{i.name}</Link>,
-      }));
-    } else if (user.role_id === 2) {
-      items = menuItems.map((i) => ({
-        key: i.key,
-        label: <Link href={i.path}>{i.name}</Link>,
-      }));
-    }
-  }
+  // 🟢 เลือกเมนูอัตโนมัติตาม path
+  const resolveMenuItems = (): MenuItem[] => {
+    if (pathname.startsWith('/documents')) return docItems;
+    if (pathname.startsWith('/admin')) return adminItems;
+    if (pathname.startsWith('/law')) return lawItems;
+    if (pathname.startsWith('/crm')) return crmItems;
+    if (pathname.startsWith('/hr')) return hrItems;
+    if (pathname.startsWith('/finance')) return financeItems;
+    if (pathname.startsWith('/security')) return securityItems;
+    if (pathname.startsWith('/portal')) return portalItems;
+    if (pathname.startsWith('/shop')) return shopItems;
+    return [];
+  };
 
+  const items = resolveMenuItems();
+
+  // 🟢 เมนู User
   const userMenu = {
     items: [
       { key: 'profile', label: <Link href='/profile'>โปรไฟล์</Link> },
@@ -68,39 +80,51 @@ export default function Header() {
       style={{
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(90deg,#1677ff,#0052cc)',
-        padding: '0 40px',
+        justifyContent: 'space-between',
+        background: '#fff',
+        padding: '0 30px',
+        borderBottom: '1px solid #f0f0f0',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
       }}
     >
-      <div
-        style={{
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: '20px',
-          marginRight: 40,
-        }}
-      >
-        PanPan Home 🏠
-      </div>
+      {/* โลโก้ */}
+      <Link href='/' style={{ textDecoration: 'none' }}>
+        <div
+          style={{
+            fontWeight: 'bold',
+            fontSize: '20px',
+            color: '#1677ff',
+            marginRight: 40,
+            cursor: 'pointer',
+          }}
+        >
+          PanPan Home 🏠
+        </div>
+      </Link>
 
-      {/* Main Menu */}
+      {/* เมนูกลาง */}
       {isMounted && (
         <Menu
-          theme='dark'
           mode='horizontal'
-          style={{ flex: 1, background: 'transparent' }}
-          items={adminItems.map((item) => ({
-            key: item.key,
+          selectedKeys={[pathname]}
+          style={{
+            flex: 1,
+            minWidth: 400,
+            background: 'transparent',
+            borderBottom: 'none',
+          }}
+          items={items.map((item) => ({
+            key: item.path,
             label: <Link href={item.path}>{item.name}</Link>,
             children: item.children?.map((child) => ({
-              key: child.key,
+              key: child.path,
               label: <Link href={child.path}>{child.name}</Link>,
             })),
           }))}
         />
       )}
 
-      {/* Auth / User */}
+      {/* User ขวา */}
       <div>
         {!isMounted ? null : !user ? (
           <Space>
@@ -109,7 +133,7 @@ export default function Header() {
                 key={btn.key}
                 type={btn.type}
                 href={btn.path}
-                style={btn.type === 'text' ? { color: 'white' } : {}}
+                style={btn.type === 'text' ? { color: '#1677ff' } : {}}
               >
                 {btn.name}
               </Button>
@@ -117,7 +141,7 @@ export default function Header() {
           </Space>
         ) : (
           <Dropdown menu={userMenu} placement='bottomRight'>
-            <Avatar style={{ backgroundColor: '#87d068', cursor: 'pointer' }}>
+            <Avatar style={{ backgroundColor: '#1677ff', cursor: 'pointer' }}>
               {user.first_name?.[0] || user.email[0]}
             </Avatar>
           </Dropdown>

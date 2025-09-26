@@ -1,4 +1,4 @@
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { Branch } from '@/types/admin/bot/branch';
 import { PaginatedResponse } from '@/types/common/pagination';
 

@@ -1,101 +1,66 @@
 'use client';
 
-import Loader from '@/components/common/Loader';
 import { RootState } from '@/redux/store';
-import { Button, Card, Col, Row, Typography } from 'antd';
-import { useRouter } from 'next/navigation';
+import { Card, Col, Row } from 'antd';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-const { Title, Paragraph } = Typography;
-
-const featuredProducts = [
-  { id: 1, name: 'โซฟาหรู', price: 15900, img: 'https://picsum.photos/400/300?1' },
-  { id: 2, name: 'โต๊ะไม้โอ๊ค', price: 8900, img: 'https://picsum.photos/400/300?2' },
-  { id: 3, name: 'โคมไฟดีไซน์', price: 2500, img: 'https://picsum.photos/400/300?3' },
-];
-
 export default function HomePage() {
-  const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
-
-  const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (user !== null) {
-      if (user.role_id === 1 || user.role_id === 3) {
-        router.push('/admin');
+    setIsMounted(true);
+  }, []);
 
-        setLoading(false);
-      }
+  if (!isMounted) {
+    // ป้องกัน Hydration error
+    return <div />;
+  }
 
-      setLoading(false);
-    } else {
-      const timer = setTimeout(() => setLoading(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [user, router]);
+  // 🟢 กำหนดเมนูหลัก (ไม่เอาย่อย)
+  const mainMenus = [
+    { key: 'shop', name: '🛍️ ร้านค้า', path: '/shop' },
+    { key: 'documents', name: '📄 จัดการเอกสาร', path: '/documents' },
+    { key: 'law', name: '⚖️ ระบบกฎหมาย', path: '/law' },
+    { key: 'crm', name: '📱 CRM & Member', path: '/crm' },
+    { key: 'hr', name: '🏢 HR & Employee', path: '/hr' },
+    { key: 'finance', name: '💰 การเงิน & บัญชี', path: '/finance' },
+    { key: 'security', name: '🔒 Security', path: '/security' },
+    { key: 'portal', name: '🌐 Portal & CMS', path: '/portal' },
+  ];
 
-  if (loading) {
-    return <Loader loading={true} />;
+  // ถ้าเป็น admin role ให้โชว์ admin ด้วย
+  if (user?.role_id === 1 || user?.role_id === 3) {
+    mainMenus.push({ key: 'admin', name: '🛠️ Admin Dashboard', path: '/admin' });
   }
 
   return (
-    <div>
-      {/* Hero Section */}
-      {user && user.role_id !== 1 && user.role_id !== 3 && (
-        <>
-          <section
-            style={{
-              textAlign: 'center',
-              padding: '80px 20px',
-              background: 'linear-gradient(180deg,#f0f6ff,#ffffff)',
-              borderRadius: 12,
-              marginBottom: 40,
-            }}
-          >
-            <Title level={1} style={{ fontSize: '36px', marginBottom: 16 }}>
-              ยินดีต้อนรับสู่ <span style={{ color: '#1677ff' }}>PanPan Home</span> 🏠
-            </Title>
-            <Paragraph style={{ fontSize: '18px', color: '#555', marginBottom: 24 }}>
-              แหล่งรวมสินค้า Lifestyle และของใช้ในบ้านคุณภาพสูง
-            </Paragraph>
-
-            {!user ? (
-              <Button type='primary' size='large' href='/auth/login'>
-                🛒 ช้อปเลย
-              </Button>
-            ) : (
-              <Button type='primary' size='large' href='/products'>
-                🛒 ช้อปเลย
-              </Button>
-            )}
-          </section>
-
-          {user && user.role_id === 2 && (
-            <section>
-              <Title level={2} style={{ textAlign: 'center', marginBottom: 30 }}>
-                สินค้าแนะนำ
-              </Title>
-              <Row gutter={[24, 24]}>
-                {featuredProducts.map((p) => (
-                  <Col xs={24} sm={12} md={8} key={p.id}>
-                    <Card
-                      hoverable
-                      cover={
-                        <img alt={p.name} src={p.img} style={{ height: 200, objectFit: 'cover' }} />
-                      }
-                      onClick={() => router.push(`/products/${p.id}`)}
-                    >
-                      <Card.Meta title={p.name} description={`${p.price.toLocaleString()} บาท`} />
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </section>
-          )}
-        </>
-      )}
+    <div style={{ padding: 40 }}>
+      <Row gutter={[24, 24]}>
+        {mainMenus.map((menu) => (
+          <Col key={menu.key} xs={24} sm={12} md={8} lg={6}>
+            <Link href={menu.path}>
+              <Card
+                hoverable
+                style={{
+                  borderRadius: 12,
+                  textAlign: 'center',
+                  height: 140,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  fontWeight: 500,
+                }}
+              >
+                {menu.name}
+              </Card>
+            </Link>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 }

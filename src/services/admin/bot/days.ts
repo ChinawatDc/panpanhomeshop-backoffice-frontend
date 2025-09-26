@@ -1,4 +1,4 @@
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { BotDay } from '@/types/admin/bot/day';
 import { PaginatedResponse } from '@/types/common/pagination';
 

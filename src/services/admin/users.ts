@@ -1,4 +1,4 @@
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { User } from '@/types/admin/user';
 
 // GET /api/admin/users

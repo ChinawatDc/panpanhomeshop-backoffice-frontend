@@ -1,5 +1,5 @@
 import { setCookie } from '@/libs/token';
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { LoginPayload, RegisterPayload } from '@/types/auth';
 
 export async function loginService(payload: LoginPayload) {

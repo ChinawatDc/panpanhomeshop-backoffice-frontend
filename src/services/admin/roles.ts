@@ -1,4 +1,4 @@
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { Role } from '@/types/admin/role';
 
 export async function listRolesService(

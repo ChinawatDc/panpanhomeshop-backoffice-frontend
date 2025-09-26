@@ -1,4 +1,4 @@
-import api from '@/services/api-axios.config';
+import { api } from '@/services/api-axios.config';
 import { Permission } from '@/types/admin/permission';
 
 export async function listPermissionsService(
