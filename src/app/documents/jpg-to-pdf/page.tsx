@@ -1,12 +1,10 @@
-import JpgPdfPage from "@/components/documents/convert/JpgPdfPage";
-
+import JpgPdfPage from '@/components/documents/convert/JpgPdfPage';
+import ToolPage from '@/components/documents/ToolPage';
 
 export default function Page() {
   return (
-    <JpgPdfPage
-      title='JPG เป็น PDF'
-      description='เลือกไฟล์ JPG หลายไฟล์ แล้วรวมเป็น PDF ไฟล์เดียว'
-      actionLabel='แปลงไฟล์'
-    />
+    <ToolPage title='JPG เป็น PDF' description='แปลงไฟล์ JPG เป็น PDF'>
+      <JpgPdfPage />;
+    </ToolPage>
   );
 }

@@ -30,32 +30,59 @@ export async function convertJpgToPdf(
   return res.data as Blob;
 }
 
-export async function convertWordToPdf(files: File[]) {
+// services/documents/convert.service.ts
+export async function convertWordToPdf(
+  files: File[],
+  options?: { merge?: boolean },
+): Promise<Blob> {
   const formData = new FormData();
   files.forEach((f) => formData.append('files', f));
-  const res = await apiDoc.post('v1/convert/word-to-pdf', formData, { responseType: 'blob' });
-  return res.data;
+  if (options && typeof options.merge !== 'undefined') {
+    formData.append('merge', options.merge ? 'true' : 'false');
+  }
+
+  const res = await apiDoc.post('v1/convert/word-to-pdf', formData, {
+    responseType: 'blob',
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return res.data as Blob;
 }
 
-export async function convertPptToPdf(files: File[]) {
+export async function convertPptToPdf(files: File[]): Promise<Blob> {
   const formData = new FormData();
   files.forEach((f) => formData.append('files', f));
-  const res = await apiDoc.post('v1/convert/ppt-to-pdf', formData, { responseType: 'blob' });
-  return res.data;
+
+  const res = await apiDoc.post('v1/convert/ppt-to-pdf', formData, {
+    responseType: 'blob',
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return res.data as Blob;
 }
 
-export async function convertExcelToPdf(files: File[]) {
+export async function convertExcelToPdf(files: File[]): Promise<Blob> {
   const formData = new FormData();
   files.forEach((f) => formData.append('files', f));
-  const res = await apiDoc.post('v1/convert/excel-to-pdf', formData, { responseType: 'blob' });
-  return res.data;
+
+  const res = await apiDoc.post('v1/convert/excel-to-pdf', formData, {
+    responseType: 'blob',
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return res.data as Blob;
 }
 
-export async function convertHtmlToPdf(files: File[]) {
+export async function convertHtmlToPdf(file: File): Promise<Blob> {
   const formData = new FormData();
-  files.forEach((f) => formData.append('files', f));
-  const res = await apiDoc.post('v1/convert/html-to-pdf', formData, { responseType: 'blob' });
-  return res.data;
+  formData.append('file', file); // ต้องใช้ key "file" ให้ตรงกับ backend
+
+  const res = await apiDoc.post('v1/convert/html-to-pdf', formData, {
+    responseType: 'blob',
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return res.data as Blob;
 }
 
 // From PDF
